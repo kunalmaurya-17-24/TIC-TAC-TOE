@@ -1,8 +1,11 @@
+// app.js
+
 let boxes = document.querySelectorAll(".box");
 let resetBtn = document.querySelector("#reset-btn");
 let newGameBtn = document.querySelector("#new-btn");
 let msgContainer = document.querySelector(".msg-container");
 let msg = document.querySelector("#msg");
+let fireworksContainer = document.querySelector("#fireworks");
 
 let turnO = true;
 
@@ -17,11 +20,11 @@ const winPatterns = [
   [6, 7, 8],
 ];
 
-
 const resetGame = () => {
-    turnO = true;
-    enableBoxes();
-    msgContainer.classList.add("hide");
+  turnO = true;
+  enableBoxes();
+  msgContainer.classList.add("hide");
+  fireworksContainer.innerHTML = '';  // clear fireworks and confetti
 }
 
 boxes.forEach((box) => {
@@ -40,49 +43,64 @@ boxes.forEach((box) => {
 });
 
 const disableBoxes = () => {
-    for(let box of boxes){
-        box.disabled = true;
-    }
+  for (let box of boxes) {
+    box.disabled = true;
+  }
 }
 
 const enableBoxes = () => {
-    for(let box of boxes){
-        box.disabled = false;
-        box.innerHTML = "";
-    }
+  for (let box of boxes) {
+    box.disabled = false;
+    box.innerHTML = "";
+  }
 }
 
 const showWinner = (winner) => {
-    msg.innerText = `Congratulations, Winner is ${winner}`;
-    msgContainer.classList.remove("hide");
-    disableBoxes();
+  msg.innerText = `Congratulations, Winner is ${winner}`;
+  msgContainer.classList.remove("hide");
+  disableBoxes();
+  triggerCelebration();
 }
 
 const checkWinner = () => {
   for (let patterns of winPatterns) {
-    // console.log(patterns[0], patterns[1], patterns[2]);
-    // console.log(
-    //   boxes[patterns[0]].innerText,
-    //   boxes[patterns[1]].innerText,
-    //   boxes[patterns[2]].innerText
-    // );
-
-
     let pos1Val = boxes[patterns[0]].innerText;
     let pos2Val = boxes[patterns[1]].innerText;
-    let pos3Val = boxes[patterns[2]].innerText;   
+    let pos3Val = boxes[patterns[2]].innerText;
 
-    if(pos1Val != "" && pos2Val != "" && pos3Val != ""){
-        if(pos1Val === pos2Val && pos2Val=== pos3Val){ 
-            showWinner(pos1Val);
-        }
+    if (pos1Val != "" && pos2Val != "" && pos3Val != "") {
+      if (pos1Val === pos2Val && pos2Val === pos3Val) {
+        showWinner(pos1Val);
+      }
     }
-
   }
 };
 
+const triggerCelebration = () => {
+  for (let i = 0; i < 20; i++) {  // Increase number of fireworks
+    createFirework();
+  }
+  for (let i = 0; i < 200; i++) {  // Increase number of confetti
+    createConfetti();
+  }
+}
 
+const createFirework = () => {
+  let firework = document.createElement("div");
+  firework.className = "firework";
+  firework.style.left = Math.random() * 100 + "vw";
+  firework.style.top = Math.random() * 100 + "vh";
+  fireworksContainer.appendChild(firework);
+  setTimeout(() => firework.remove(), 1000); // remove after animation
+}
 
-newGameBtn.addEventListener("click" , resetGame);
+const createConfetti = () => {
+  let confetti = document.createElement("div");
+  confetti.className = "confetti";
+  confetti.style.left = Math.random() * 100 + "vw";
+  fireworksContainer.appendChild(confetti);
+  setTimeout(() => confetti.remove(), 2000); // remove after animation
+}
 
-resetBtn.addEventListener("click" , resetGame);
+newGameBtn.addEventListener("click", resetGame);
+resetBtn.addEventListener("click", resetGame);
